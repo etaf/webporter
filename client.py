@@ -4,6 +4,7 @@ from webporter import  Proxy
 from Queue import Queue
 from bs4 import BeautifulSoup
 import urlparse
+import sys
 #start_url = "/browse/homes/ok/"
 start_url = "/"
 q = Queue()
@@ -34,6 +35,7 @@ def woker():
             q.put(url)
             save_work()
             print "Bye~"
+            sys.exit(0)
 
 def save_work():
     try:

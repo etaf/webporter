@@ -29,14 +29,12 @@ class Proxy:
     crawler = Crawler()
     proxy_target_url = "http://www.zillow.com"
     def __init__(self):
-        print "started"
         self.create_db_table()
 
     def GET(self):
         target_url = urlparse.urljoin(self.proxy_target_url, web.ctx['path'])
         target_url = urlparse.urljoin(target_url, web.ctx['query'])
-        (page, in_db) = self.get_page(target_url)
-        return page
+        return self.get_page(target_url)[0]
 
     def get_page(self,target_url):
         new_page = self.get_from_db(target_url)
