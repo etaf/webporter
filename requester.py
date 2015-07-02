@@ -14,7 +14,7 @@ zips = []
 
 class Requester():
     q = Queue()
-    max_depth = 4
+    max_depth = 5
 
     def request(self,search_type, citystatezip):
         with self.q.mutex:
