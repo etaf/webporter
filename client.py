@@ -6,8 +6,8 @@ from bs4 import BeautifulSoup
 import urlparse
 import sys
 import time
-#start_url = "/browse/homes/ok/"
-start_url = "/"
+start_url = "/browse/homes/"
+#start_url = "/"
 q = Queue()
 proxy = Proxy()
 
@@ -15,7 +15,8 @@ def do_work(url):
     target_url = urlparse.urljoin(proxy.proxy_target_url, url)
     print "****processing: ", target_url
     (page, in_db) = proxy.get_page(target_url)
-    if page == "" or in_db:
+    #if page == "" or in_db:
+    if page == "":
         return
     #get_all urls_from_page:
     start_time = time.time()
