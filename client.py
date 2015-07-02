@@ -15,8 +15,7 @@ def do_work(url):
     target_url = urlparse.urljoin(proxy.proxy_target_url, url)
     print "****processing: ", target_url
     (page, in_db) = proxy.get_page(target_url)
-    #if page == "" or in_db:
-    if page == "":
+    if page == "" or in_db:
         return
     #get_all urls_from_page:
     start_time = time.time()
