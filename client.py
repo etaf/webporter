@@ -10,7 +10,6 @@ q = Queue()
 proxy = Proxy()
 
 def do_work(url):
-
     target_url = urlparse.urljoin(proxy.proxy_target_url, url)
     print "processing: ", target_url
     (page, in_db) = proxy.get_page(target_url)
@@ -25,18 +24,42 @@ def do_work(url):
             q.put(link)
 
 def woker():
-    q.put(start_url)
     while not q.empty():
         url = q.get()
-        do_work(url)
-        q.task_done()
+        try:
+            do_work(url)
+            q.task_done()
+        except KeyboardInterrupt:
+            print "stopping, saving unfinished jobs."
+            q.put(url)
+            save_work()
+            print "Bye~"
 
-    print "Finished!"
+def save_work():
+    try:
+        fp = open("jobs.txt","w")
+    except IOError:
+        print "Can not open jobs.txt to store!"
+        return
+    while not q.empty():
+        fp.write(q.get()+"\n")
+    fp.close()
+
+def load_work():
+    print "loading previous unfinished jobs"
+    try:
+        fp = open("jobs.txt","r")
+    except IOError:
+        return
+    for line in fp.readlines():
+        q.put(line)
+    fp.close()
 
 def main():
     q.put(start_url)
+    load_work()
     woker()
-
+    print "Finished!"
 
 if __name__ =="__main__":
     main()
