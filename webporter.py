@@ -6,7 +6,7 @@ import urllib2
 import cookielib
 import urlparse
 import sqlite3
-urls = ("/.*","proxy")
+urls = ("/.*","Proxy")
 app = web.application(urls, globals())
 class Crawler:
     def __init__(self):
@@ -25,7 +25,7 @@ class Crawler:
             print "==================\n"
             return ""
 
-class proxy:
+class Proxy:
     crawler = Crawler()
     proxy_target_url = "http://www.zillow.com"
     def __init__(self):
@@ -35,11 +35,16 @@ class proxy:
     def GET(self):
         target_url = urlparse.urljoin(self.proxy_target_url, web.ctx['path'])
         target_url = urlparse.urljoin(target_url, web.ctx['query'])
+        return self.get_page(target_url)
+
+    def get_page(self,target_url):
         new_page = self.get_from_db(target_url)
         if(new_page == None):
             page = self.crawler.get_page_html(target_url)
             new_page = page.replace(self.proxy_target_url, "")
             self.save_to_db(target_url, new_page)
+        else:
+            print "found in db!"
         return new_page
 
     def save_to_db(self, target_url, page):
