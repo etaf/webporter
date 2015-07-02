@@ -35,18 +35,21 @@ class Proxy:
     def GET(self):
         target_url = urlparse.urljoin(self.proxy_target_url, web.ctx['path'])
         target_url = urlparse.urljoin(target_url, web.ctx['query'])
-        return self.get_page(target_url)
+        (page, in_db) = self.get_page(target_url)
+        return page
 
     def get_page(self,target_url):
         new_page = self.get_from_db(target_url)
         if(new_page == None):
+            in_db = False
             page = self.crawler.get_page_html(target_url)
             new_page = page.replace(self.proxy_target_url, "")
             if new_page != "":
                 self.save_to_db(target_url, new_page)
         else:
+            in_db = True
             print "found in db!"
-        return new_page
+        return new_page,in_db
 
     def save_to_db(self, target_url, page):
         conn = sqlite3.connect('zillow.db')
