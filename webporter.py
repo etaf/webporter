@@ -6,6 +6,7 @@ import urllib2
 import cookielib
 import urlparse
 import sqlite3
+import time
 urls = ("/.*","Proxy")
 app = web.application(urls, globals())
 class Crawler:
@@ -18,8 +19,16 @@ class Crawler:
     def get_page_html(self, target_url):
         try:
             req = urllib2.Request(target_url, headers = self.http_header)
-            return self.opener.open(req, timeout=60).read()
+            start_time = time.time()
+            rep = self.opener.open(req).read()
+            print "Network use time: %s seconds" % (time.time() - start_time)
+            return rep
         except urllib2.HTTPError, err:
+            print "==================\n",err
+            print "==================\n",target_url
+            print "==================\n"
+            return ""
+        except urllib2.URLError, err:
             print "==================\n",err
             print "==================\n",target_url
             print "==================\n"

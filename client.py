@@ -5,6 +5,7 @@ from Queue import Queue
 from bs4 import BeautifulSoup
 import urlparse
 import sys
+import time
 #start_url = "/browse/homes/ok/"
 start_url = "/"
 q = Queue()
@@ -12,18 +13,19 @@ proxy = Proxy()
 
 def do_work(url):
     target_url = urlparse.urljoin(proxy.proxy_target_url, url)
-    print "processing: ", target_url
+    print "****processing: ", target_url
     (page, in_db) = proxy.get_page(target_url)
     if page == "" or in_db:
         return
     #get_all urls_from_page:
+    start_time = time.time()
     soup = BeautifulSoup(page)
     links = soup.find_all('a')
     for tag in links:
         link = tag.get('href',None)
         if (link is not None) and (len(link) > 0) and(link[0] == '/') :
             q.put(link)
-
+    print "Parse use time: %s seconds" % (time.time() - start_time)
 def woker():
     while not q.empty():
         url = q.get()
@@ -54,7 +56,7 @@ def load_work():
     except IOError:
         return
     for line in fp.readlines():
-        q.put(line)
+        q.put(line.strip())
     fp.close()
 
 def main():
