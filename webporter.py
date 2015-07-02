@@ -7,6 +7,7 @@ import cookielib
 import urlparse
 import sqlite3
 import time
+import socket
 urls = ("/.*","Proxy")
 app = web.application(urls, globals())
 class Crawler:
@@ -33,6 +34,12 @@ class Crawler:
             print "==================\n",target_url
             print "==================\n"
             return ""
+        except socket.error, err:
+            print "==================\n",err
+            print "==================\n",target_url
+            print "==================\n"
+            return ""
+
 
 class Proxy:
     crawler = Crawler()
