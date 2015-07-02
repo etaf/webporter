@@ -18,7 +18,7 @@ class Crawler:
     def get_page_html(self, target_url):
         try:
             req = urllib2.Request(target_url, headers = self.http_header)
-            return self.opener.open(req).read()
+            return self.opener.open(req, timeout=60).read()
         except urllib2.HTTPError, err:
             print "==================\n",err
             print "==================\n",target_url
@@ -42,7 +42,8 @@ class Proxy:
         if(new_page == None):
             page = self.crawler.get_page_html(target_url)
             new_page = page.replace(self.proxy_target_url, "")
-            self.save_to_db(target_url, new_page)
+            if new_page != "":
+                self.save_to_db(target_url, new_page)
         else:
             print "found in db!"
         return new_page
