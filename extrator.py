@@ -13,7 +13,7 @@ def get_all_house_from_db():
     conn = sqlite3.connect('zillow.db')
     conn.text_factory = str
     cursor = conn.execute("SELECT * FROM zillow")
-    pattern = re.compile(r'^http:\/\/www\.zillow\.com\/homedetails\/.*$')
+    pattern = re.compile(r'^http:\/\/www\.zillow\.com\/(homedetails|community)\/.*$')
     house_num = 0
     for row in cursor:
         if pattern.match(row[0]):

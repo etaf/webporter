@@ -6,21 +6,25 @@ from bs4 import BeautifulSoup
 import urlparse
 import sys
 import time
+import re
 
 proxy = Proxy()
 states = []
 cities = []
 zips = []
 
+pattern = re.compile(r'^\/(homedetails|community)\/.*$')
+
+processed_set = set()
 class Requester():
     q = Queue()
-    max_depth = 4
-
+    max_depth = 3
     def request(self,search_type, citystatezip):
         with self.q.mutex:
             self.q.queue.clear()
         target_url = "/search/RealEstateSearch.htm?origplaceholdertext=&searchbar-type=%s&citystatezip=%s" % (search_type,"+".join(citystatezip.split()))
         self.q.put([target_url,0])
+        processed_set.add(target_url)
         while not self.q.empty():
             (url, depth) = self.q.get()
             if(depth <= self.max_depth):
@@ -37,8 +41,11 @@ class Requester():
         links = soup.find_all('a')
         for tag in links:
             link = tag.get('href',None)
-            if (link is not None) and (len(link) > 1) and(link[0] == '/') and (link[1]!="/") and (depth <self.max_depth):
+            if (link is not None) and (len(link) > 1) and(link[0] == '/') and (link[1]!="/") and (depth <self.max_depth) and (not link in processed_set):
+                #if pattern.match(link):
+                    #print "depth: %d\n%s" % (depth, target_url)
                 self.q.put([link,depth+1])
+                processed_set.add(link)
 
 
 
@@ -86,7 +93,7 @@ def get_all_statecityzip():
 
 def get_all_querys_from_file():
     querys = []
-    fp = open("states.txt","r")
+    fp = open("zips.txt","r")
     for line in fp.readlines():
         querys.append(line.strip())
     fp.close()
@@ -94,10 +101,11 @@ def get_all_querys_from_file():
     for line in fp.readlines():
         querys.append(line.strip())
     fp.close()
-    fp = open("zips.txt","r")
+    fp = open("states.txt","r")
     for line in fp.readlines():
         querys.append(line.strip())
     fp.close()
+
     return querys
 
 def main():
