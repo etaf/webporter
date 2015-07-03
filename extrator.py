@@ -21,7 +21,7 @@ def get_all_house_from_db():
             print "****get detail from : ",row[0]
             get_house_detail(row[0], row[1])
     conn.close()
-    print "get %d houses" % house_num
+    print "Fiinished! %d houses extracted\n" % house_num
 
 def get_house_detail(url,html_page):
     soup = BeautifulSoup(html_page)
@@ -56,10 +56,9 @@ def get_house_detail(url,html_page):
     if zillow_home_id != "":
         save_house_to_db(zillow_home_id, addr, house_status, price, intro)
         print "details saved to database"
-        save_imgs(zillow_home_id, img_urls)
-        print "images saved to local director"
+        #save_imgs(zillow_home_id, img_urls)
+        #print "images saved to local director"
 
-import shutil
 def save_imgs(zillow_home_id, img_urls):
     img_dir = os.path.join('./img',zillow_home_id)
     if  os.path.exists(img_dir):
@@ -68,7 +67,7 @@ def save_imgs(zillow_home_id, img_urls):
     i = 0
     for url in img_urls:
         i = i + 1
-        print "***Downloading image from %s" % url
+        print "***Downloading image from %s", url
         urllib.urlretrieve(url,os.path.join(img_dir,'%d.jpg' % i))
 
 def save_house_to_db(zillow_home_id, addr, house_status, price, intro):
