@@ -21,7 +21,7 @@ def get_all_house_from_db():
             print "****get detail from : ",row[0]
             get_house_detail(row[0], row[1])
     conn.close()
-    print house_num
+    print "get %d houses" % house_num
 
 def get_house_detail(url,html_page):
     soup = BeautifulSoup(html_page)
