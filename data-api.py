@@ -25,6 +25,7 @@ def get_extrated_houses():
 if __name__ =='__main__':
 
     houses = get_extrated_houses()
-    for house in houses:
-        print house
+    print "%d houses."  % len(houses)
+    print "an example:"
+    print houses[0]
 
