@@ -81,9 +81,10 @@ def save_house_to_db(zillow_home_id, addr, house_status, price, intro):
     try:
         conn.execute("INSERT INTO house VALUES (?,?,?,?,?) ", (zillow_home_id, addr, house_status, price, intro))
         conn.commit()
-    except sqlite3.IntegrityError:
+    except :
         pass
-    conn.close()
+    finally:
+        conn.close()
 
 def create_db_table():
     conn = sqlite3.connect('house.db')
