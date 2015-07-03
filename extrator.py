@@ -31,13 +31,22 @@ def get_house_detail(url,html_page):
     price = ""
     intro = ""
     zillow_home_id = ""
+
+    tmp = re.findall('Zillow Home ID: (\d+)</li>',html_page)
+    if tmp:
+        zillow_home_id = tmp[0]
+    else:
+        return
+    addr_html = soup.find('header', attrs = {'class':'zsg-content-header addr'}).find('h1')
+    if addr_html:
+        addr = addr_html.text
+    else:
+        return
     for img_div in soup.findAll('img', attrs = {'class':'hip-photo'}):
         if img_div.has_attr('src'):
             img_urls.append(img_div['src'])
         if img_div.has_attr('href'):
             img_urls.append(img_div['href'])
-    addr = soup.find('header', attrs = {'class':'zsg-content-header addr'}).find('h1').text
-
     house_status_html = soup.find('div', attrs = {'class':'status-icon-row'})
     if house_status_html:
         house_status = house_status_html.text.strip()
@@ -50,14 +59,10 @@ def get_house_detail(url,html_page):
     if intro_html:
         intro = intro_html.text
 
-    tmp = re.findall('Zillow Home ID: (\d+)</li>',html_page)
-    if tmp:
-        zillow_home_id = tmp[0]
-    if zillow_home_id != "":
-        save_house_to_db(zillow_home_id, addr, house_status, price, intro)
-        print "details saved to database"
-        #save_imgs(zillow_home_id, img_urls)
-        #print "images saved to local director"
+    save_house_to_db(zillow_home_id, addr, house_status, price, intro)
+    print "details saved to database"
+    #save_imgs(zillow_home_id, img_urls)
+    #print "images saved to local director"
 
 def save_imgs(zillow_home_id, img_urls):
     img_dir = os.path.join('./img',zillow_home_id)
