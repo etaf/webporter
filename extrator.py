@@ -68,7 +68,7 @@ def save_imgs(zillow_home_id, img_urls):
     i = 0
     for url in img_urls:
         i = i + 1
-        print "***Downloading image from %s", url
+        print "***Downloading image from %s" % url
         urllib.urlretrieve(url,os.path.join(img_dir,'%d.jpg' % i))
 
 def save_house_to_db(zillow_home_id, addr, house_status, price, intro):
