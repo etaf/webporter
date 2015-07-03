@@ -68,9 +68,13 @@ class Proxy:
     def save_to_db(self, target_url, page):
         conn = sqlite3.connect('zillow.db')
         conn.text_factory = str
-        conn.execute("INSERT INTO zillow VALUES (?,?) ", (target_url, page))
-        conn.commit()
+        try:
+            conn.execute("INSERT INTO zillow VALUES (?,?) ", (target_url, page))
+            conn.commit()
+        except sqlite3.IntegrityError:
+            pass
         conn.close()
+
 
     def get_from_db(self, target_url):
         conn = sqlite3.connect('zillow.db')
