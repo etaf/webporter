@@ -24,21 +24,27 @@ class Crawler:
             rep = self.opener.open(req).read()
             print "Network use time: %s seconds" % (time.time() - start_time)
             return rep
-        except urllib2.HTTPError, err:
-            print "==================\n",err
+        except Exception as e:
+            print "==================\n",e
             print "==================\n",target_url
             print "==================\n"
             return ""
-        except urllib2.URLError, err:
-            print "==================\n",err
-            print "==================\n",target_url
-            print "==================\n"
-            return ""
-        except socket.error, err:
-            print "==================\n",err
-            print "==================\n",target_url
-            print "==================\n"
-            return ""
+
+#        except urllib2.HTTPError, err:
+            #print "==================\n",err
+            #print "==================\n",target_url
+            #print "==================\n"
+            #return ""
+        #except urllib2.URLError, err:
+            #print "==================\n",err
+            #print "==================\n",target_url
+            #print "==================\n"
+            #return ""
+        #except socket.error, err:
+            #print "==================\n",err
+            #print "==================\n",target_url
+            #print "==================\n"
+            #return ""
 
 
 class Proxy:
