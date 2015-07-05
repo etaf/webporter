@@ -18,7 +18,7 @@ pattern = re.compile(r'^\/(homedetails|community)\/.*$')
 processed_set = set()
 class Requester():
     q = Queue()
-    max_depth = 3
+    max_depth = 2
     def request(self,search_type, citystatezip):
         with self.q.mutex:
             self.q.queue.clear()

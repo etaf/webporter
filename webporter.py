@@ -78,7 +78,7 @@ class Proxy:
             conn.execute("INSERT INTO zillow VALUES (?,?) ", (target_url, page))
             conn.commit()
         except:
-            pass
+            time.sleep(1)
         finally:
             conn.close()
 
