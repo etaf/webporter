@@ -39,7 +39,13 @@ def get_house_detail(url,html_page):
         return
     addr_html = soup.find('header', attrs = {'class':'zsg-content-header addr'}).find('h1')
     if addr_html:
-        addr = addr_html.text
+        addr = addr_html.text.strip()
+        zip_code = re.findall(r'\d{5}', addr)
+        if len(zip_code) <= 0:
+            return
+        else:
+            zip_code = zip_code[0]
+            print zip_code
     else:
         return
     for img_div in soup.findAll('img', attrs = {'class':'hip-photo'}):
@@ -59,13 +65,13 @@ def get_house_detail(url,html_page):
     if intro_html:
         intro = intro_html.text
 
-    save_house_to_db(zillow_home_id, addr, house_status, price, intro)
+    save_house_to_db(zillow_home_id, zip_code, addr, house_status, price, intro)
     print "details saved to database"
     #save_imgs(zillow_home_id, img_urls)
     #print "images saved to local director"
 
 def save_imgs(zillow_home_id, img_urls):
-    img_dir = os.path.join('./img',zillow_home_id)
+    img_dir = os.path.join('./static/img',zillow_home_id)
     if  os.path.exists(img_dir):
         return
     os.makedirs(img_dir)
@@ -74,12 +80,13 @@ def save_imgs(zillow_home_id, img_urls):
         i = i + 1
         print "***Downloading image from %s", url
         urllib.urlretrieve(url,os.path.join(img_dir,'%d.jpg' % i))
+        break
 
-def save_house_to_db(zillow_home_id, addr, house_status, price, intro):
+def save_house_to_db(zillow_home_id, zip_code, addr, house_status, price, intro):
     conn = sqlite3.connect('house.db')
     conn.text_factory = str
     try:
-        conn.execute("INSERT INTO house VALUES (?,?,?,?,?) ", (zillow_home_id, addr, house_status, price, intro))
+        conn.execute("INSERT INTO house VALUES (?,?,?,?,?,?) ", (zillow_home_id,zip_code, addr, house_status, price, intro))
         conn.commit()
     except :
         pass
@@ -90,6 +97,7 @@ def create_db_table():
     conn = sqlite3.connect('house.db')
     conn.execute('''CREATE TABLE IF NOT EXISTS house
                  (zillow_home_id TEXT PRIMARY KEY NOT NULL,
+                 zip_code INTEGER,
                  addr TEXT,
                  house_status TEXT,
                  price TEXT,
